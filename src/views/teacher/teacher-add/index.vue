@@ -24,22 +24,61 @@
       <el-form-item label="教师简介">
         <el-input type="textarea" v-model="teacher.career" placeholder="简历填写"/>
       </el-form-item>
+
+
+      <el-form-item label="讲师头像">
+
+        <!-- 头衔缩略图 -->
+        <pan-thumb :image="teacher.avatar"/>
+        <!-- 文件上传按钮 -->
+        <el-button type="primary" icon="el-icon-upload" @click="imagecropperShow=true">更换头像
+        </el-button>
+
+        <!--
+            v-show：是否显示上传组件
+            :key：类似于id，如果一个页面多个图片上传控件，可以做区分
+            :url：后台上传的url地址
+            @close：关闭上传组件
+            @crop-upload-success：上传成功后的回调
+          -->
+        <image-cropper
+          v-show="imagecropperShow"
+          :width="300"
+          :height="300"
+          :key="imagecropperKey"
+          :url="OSS_SERVICE+'/admin/oss/file/upload/avatar'"
+          field="file"
+          @close="close"
+          @crop-upload-success="cropSuccess"/>
+
+      </el-form-item>
+
+
       <el-form-item>
         <el-button type="primary" @click="onSubmit">立即创建</el-button>
         <el-button @click="goBack()">返回</el-button>
       </el-form-item>
+
+
     </el-form>
   </div>
 </template>
 
 <script>
   import {postTeacher} from "../../../api/teacher";
+  import {ossService, default_oss_path} from "../../../config";
+  import ImageCropper from '@/components/ImageCropper'
+  import PanThumb from '@/components/PanThumb'
 
   export default {
+    components: {ImageCropper, PanThumb},
     data() {
       return {
+        imagecropperShow: false, // 是否显示上传组件
+        imagecropperKey: 0,// 上传组件id
+        OSS_SERVICE: ossService,
         teacher: {
-          avatar: "",
+          avatar: default_oss_path,
           career: "",
           intro: "",
           level: null,
@@ -56,44 +95,49 @@
           value: 3,
           label: '特级教师'
         }],
+      }
+    },
+    methods: {
+      "onSubmit": function () {
+        postTeacher(this.teacher).then(res => {
+          console.log("post上传结果", res.success)
+          if (res.success) {
+            this.$message({
+              type: 'success',
+              message: '添加成功!'
+            });
+          } else {
+            this.$message({
+              type: 'error',
+              message: '添加成功!'
+            });
+          }
+        })
+      }
 
+      ,
+      "goBack": function () {
+        this.$router.push({
+          path: "/teacher-manger/teacher-list", query: {
+            currentPage: this.$route.query.currentPage,
+            pageSize: this.$route.query.pageSize
+          }
+        })
+      },
+      "cropSuccess": function (data) {
+        console.log(data)
+        this.imagecropperShow = false
+        this.teacher.avatar = data.url
+        // 上传成功后，重新打开上传组件时初始化组件，否则显示上一次的上传结果
+        this.imagecropperKey = this.imagecropperKey + 1
+      },
+      // 关闭上传组件
+      "close":function() {
+        this.imagecropperShow = false
+        // 上传失败后，重新打开上传组件时初始化组件，否则显示上一次的上传结果
+        this.imagecropperKey = this.imagecropperKey + 1
+      },
     }
-  }
-  ,
-  methods: {
-    "onSubmit"
-  :
-
-    function () {
-      postTeacher(this.teacher).then(res => {
-        console.log("post上传结果", res.success)
-        if (res.success) {
-          this.$message({
-            type: 'success',
-            message: '添加成功!'
-          });
-        } else {
-          this.$message({
-            type: 'error',
-            message: '添加成功!'
-          });
-        }
-      })
-    }
-
-  ,
-    "goBack"
-  :
-
-    function () {
-      this.$router.push({
-        path: "/teacher-manger/teacher-list", query: {
-          currentPage: this.$route.query.currentPage,
-          pageSize: this.$route.query.pageSize
-        }
-      })
-    }
-  }
   }
 
 </script>

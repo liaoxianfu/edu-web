@@ -1,8 +1,7 @@
 import request from '@/utils/request'
+import {eduService} from '@/config'
 
-const baseUrl = '/admin/edu/teacher'
-
-
+const baseUrl = eduService + '/admin/edu/teacher'
 
 
 export const teacherPageList = function (page, size, params) {
