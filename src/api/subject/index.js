@@ -36,3 +36,11 @@ export const getFirstLevelSubList = function () {
 }
 
 
+// 获取二级id
+export const getSecondLevelSubList = function (id) {
+  return request({
+    url: `${baseUrl}/secondLevel/${id}`,
+    method: 'get'
+  })
+}
+

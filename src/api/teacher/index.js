@@ -43,3 +43,12 @@ export const updateTeacherById = function (id, data) {
     data: data
   })
 }
+
+// 获取所有的教师
+
+export const getAllTeacher = function () {
+  return request({
+    url: baseUrl,
+    method: 'get'
+  })
+}
