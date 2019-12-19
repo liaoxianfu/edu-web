@@ -1,9 +1,9 @@
 import Layout from "@/layout/index";
 // 课程分类管理
 export const courseRouter = {
-  path: '/edu/course',
+  path: '/course',
   component: Layout,
-  redirect: '/edu/course/list',
+  redirect: '/course/list',
   name: 'Course',
   meta: {title: '课程管理', icon: 'form'},
   children: [

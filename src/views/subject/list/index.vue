@@ -3,7 +3,6 @@
     <h2>课程主题</h2>
     <el-tree
       :data="data"
-      show-checkbox
       node-key="id"
       default-expand-all
       :expand-on-click-node="false">

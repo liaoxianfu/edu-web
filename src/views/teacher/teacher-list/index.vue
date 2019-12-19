@@ -1,5 +1,5 @@
 <template>
-  <div style="margin: 15px">
+  <div class="app-container">
     <el-form :inline="true" :model="formQuery" class="demo-form-inline">
       <el-form-item label="教师姓名">
         <el-input v-model="formQuery.teacherName" placeholder="教师姓名模糊查询"/>

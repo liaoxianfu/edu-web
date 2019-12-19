@@ -44,3 +44,19 @@ export const getSecondLevelSubList = function (id) {
   })
 }
 
+// 通过id获取Subject
+
+export const getSubjectById = function (id) {
+  return request({
+    url: `${baseUrl}/${id}`,
+    method: 'get'
+  })
+}
+
+// 通过二级id获取一级的信息
+export const getFirstLevelSubject = function (id) {
+  return request({
+    url: `${baseUrl}/firstLevel/${id}`,
+    method: 'get'
+  })
+}
