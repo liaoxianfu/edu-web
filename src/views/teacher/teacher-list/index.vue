@@ -121,7 +121,7 @@
 
 
 <script>
-  import {teacherPageList, deleteTeacherById} from "../../../api/teacher";
+  import {deleteTeacherById, teacherPageList} from "../../../api/teacher";
 
   export default {
     data() {

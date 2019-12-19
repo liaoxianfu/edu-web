@@ -9,35 +9,41 @@
       <el-step title="提交审核"/>
     </el-steps>
     <el-button type="primary" @click="dialogChapterFormVisible = true">添加章节</el-button>
-    <!-- 章节 -->
-    <ul class="chanpterList">
-      <li
+<!-- 章节 -->
+    <el-collapse style="margin-top: 5px;margin-bottom: 5px">
+      <el-collapse-item
         v-for="chapter in chapterNestedList"
-        :key="chapter.id">
+        :name="chapter.id"
+        :key="chapter.id" >
+        <template slot="title">
         <p>
           {{ chapter.title }}
-          <span class="acts">
+          <span class="acts" >
                 <el-button type="text" @click="addVideo(chapter.id)">添加课时</el-button>
                 <el-button type="text" @click="showChapter(chapter.id)">编辑</el-button>
                 <el-button type="text" @click="deleteChapterById(chapter.id)">删除</el-button>
             </span>
         </p>
-
+        </template>
         <!-- 视频 -->
-        <ul class="chanpterList videoList">
-          <li
+         <el-collapse accordion>
+          <el-collapse-item
+            style="margin-left: 30px"
             v-for="video in chapter.children"
+            :name="video.id"
             :key="video.id">
+            <template slot="title">
             <p>{{ video.title }}
-              <span class="acts">
+              <span style="float: right" class="acts">
                         <el-button type="text" @click="getVideoInfoById(video.id)">编辑</el-button>
                         <el-button type="text" @click="deleteVideoById(video.id)">删除</el-button>
               </span>
             </p>
-          </li>
-        </ul>
-      </li>
-    </ul>
+            </template>
+          </el-collapse-item>
+        </el-collapse>
+      </el-collapse-item>
+    </el-collapse>
     <el-form label-width="120px">
       <el-form-item>
         <!-- 跳转到info页面-->
@@ -90,8 +96,8 @@
         </el-form-item>
         <el-form-item label="是否免费">
           <el-radio-group v-model="video.free">
-            <el-radio :label=1>免费</el-radio>
-            <el-radio :label=0>默认</el-radio>
+            <el-radio :label=true>免费</el-radio>
+            <el-radio :label=false>默认</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="上传视频">
@@ -110,7 +116,6 @@
 <script>
   import * as chapterApi from '../../api/chapter'
   import * as videoApi from '../../api/video'
-  import {deleteWithConfirm} from "../../utils/edu/deleteUtils";
 
   // 定义默认的video对象
   const defaultVideo = {
@@ -119,7 +124,7 @@
     courseId: '',
     title: '',
     sort: 0,
-    free: 0,
+    free: false,
     videoSourceId: ''
   }
 
@@ -161,11 +166,11 @@
     methods: {
       previous() {
         // 返回上一层
-        this.$router.push({path: '/course/info/' + this.courseInfo})
+        this.$router.push({path: '/course/info/' + this.courseId})
       },
       next() {
         console.log('next')
-        this.$router.push({path: '/course/publish/1'})
+        this.$router.push({path: '/course/publish/'+this.courseId})
       },
       getChapterByCourseId() {
         chapterApi.getChapterByCourse(this.courseId).then(res => {

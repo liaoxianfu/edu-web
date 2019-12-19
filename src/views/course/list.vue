@@ -147,7 +147,7 @@
         },
         pageInfo: {
           current: 1,
-          size: 10,
+          size: 13,
           total: 0,
         },
         pickerOptions: {

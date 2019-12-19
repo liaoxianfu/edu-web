@@ -10,6 +10,18 @@
       <el-step title="提交审核"/>
     </el-steps>
 
+    <div class="ccInfo">
+      <img :src="coursePublish.cover">
+      <div class="main">
+        <h2>{{ coursePublish.title }}</h2>
+        <p class="gray"><span>共{{ coursePublish.lessonNum }}课时</span></p>
+        <p class="gray"><span>已经发布{{ coursePublish.lessonPublishCount }}课时</span></p>
+        <p><span>所属分类：{{ coursePublish.subjectLevelOne }} — {{ coursePublish.subjectLevelTwo }}</span></p>
+        <p>课程讲师：{{ coursePublish.teacherName }}</p>
+        <h3 class="red">￥{{ coursePublish.price }}</h3>
+      </div>
+    </div>
+
     <el-form label-width="120px">
 
       <el-form-item>
@@ -22,27 +34,125 @@
 
 <script>
 
+  import {getPublishData, publishCourse} from "../../api/course";
+
   export default {
     data() {
       return {
-        saveBtnDisabled: false // 保存按钮是否禁用
+        saveBtnDisabled: false, // 保存按钮是否禁用
+        courseId: '', // 所属课程
+        coursePublish: {
+          cover: '',
+          title: '',
+          lessonNum: '',
+          subjectLevelOne: '',
+          subjectLevelTwo: '',
+          teacherName: '',
+          price: '',
+          lessonPublishCount: '',
+        },
+        data:{
+          courseId:''
+        }
       }
     },
 
     created() {
-      console.log('publish created')
+      // 获取id
+      this.courseId = this.$route.params.id
+      console.log(this.courseId)
+      // 加载数据
+      this.loadData()
     },
 
     methods: {
       previous() {
         console.log('previous')
-        this.$router.push({ path: '/course/chapter/1' })
+        this.$router.push({path: '/course/chapter/'+this.courseId})
       },
 
       publish() {
-        console.log('publish')
-        this.$router.push({ path: '/course/list' })
+        this.data.courseId =this.courseId
+        publishCourse(this.data).then(res=>{
+          console.log(this.courseId)
+          if (res.success){
+            this.$message.success("发布课程成功")
+            this.$router.push({path: '/course/list'})
+          }else {
+            this.$message.error("发布课程失败")
+            console.log(res)
+          }
+        }).catch(reason => {
+          this.$message.error("发布课程失败")
+          console.log(res)
+        })
+      },
+      loadData() {
+        getPublishData(this.courseId).then(res => {
+          this.coursePublish = res.data.data
+        }).catch(reason => {
+          this.$message.error("加载数据失败")
+          console.log(reason)
+        })
       }
     }
   }
 </script>
+
+
+<style scoped>
+  .ccInfo {
+    background: #f5f5f5;
+    padding: 20px;
+    overflow: hidden;
+    border: 1px dashed #DDD;
+    margin-bottom: 40px;
+    position: relative;
+  }
+
+  .ccInfo img {
+    background: #d6d6d6;
+    width: 500px;
+    height: 278px;
+    display: block;
+    float: left;
+    border: none;
+  }
+
+  .ccInfo .main {
+    margin-left: 520px;
+  }
+
+  .ccInfo .main h2 {
+    font-size: 28px;
+    margin-bottom: 30px;
+    line-height: 1;
+    font-weight: normal;
+  }
+
+  .ccInfo .main p {
+    margin-bottom: 10px;
+    word-wrap: break-word;
+    line-height: 24px;
+    max-height: 48px;
+    overflow: hidden;
+  }
+
+  .ccInfo .main p {
+    margin-bottom: 10px;
+    word-wrap: break-word;
+    line-height: 24px;
+    max-height: 48px;
+    overflow: hidden;
+  }
+
+  .ccInfo .main h3 {
+    left: 540px;
+    bottom: 20px;
+    line-height: 1;
+    font-size: 28px;
+    color: #d32f24;
+    font-weight: normal;
+    position: absolute;
+  }
+</style>

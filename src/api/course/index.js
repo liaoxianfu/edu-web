@@ -3,7 +3,6 @@ import {eduService} from '@/config'
 
 const baseUrl = eduService + '/admin/edu/course'
 
-
 export const saveCourseInfo = function (data) {
   return request({
     url: baseUrl,
@@ -44,7 +43,21 @@ export const deleteCourseById = function (id) {
   })
 }
 
+export const getPublishData = function (id) {
+  return request({
+    url: `${baseUrl}/publish/${id}`,
+    method: 'get'
+  })
+}
 
+export const publishCourse = function (data) {
+  return request({
+    url: `${baseUrl}/publish`,
+    method: 'post',
+    params:data
+  })
+
+}
 
 
 
