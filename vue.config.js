@@ -59,7 +59,14 @@ module.exports = {
         pathRewrite: {
           '^/oss': '',
         }
-      }
+      },
+      '/resource':{
+        target: 'http://127.0.0.1:8201',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/resource': '',
+        }
+}
     },
     after: require('./mock/mock-server.js')
   },

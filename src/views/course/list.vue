@@ -8,6 +8,10 @@
         <el-input v-model="queryData.courseName" placeholder="课程名称模糊查询"/>
       </el-form-item>
 
+      <el-form-item label="教师名称">
+        <el-input v-model="queryData.teacherName" placeholder="教师名称模糊查询"/>
+      </el-form-item>
+
 
 
       <el-form-item label="开始时间">
@@ -61,8 +65,9 @@
       </el-table-column>
       <el-table-column
         prop="teacher_id"
-        label="授课教师ID"
-        width="200"
+        label="授课教师"
+        width="150"
+        :formatter="teacherFormatter"
       >
       </el-table-column>
 
@@ -135,13 +140,15 @@
 
 <script>
   import * as courseApi from "../../api/course";
-
+import * as teacherApi from "../../api/teacher"
   export default {
     data() {
       return {
+        teacherMap:{},
         courseInfoList: [],
         queryData: {
           courseName: '',
+          teacherName:'',
           startTime: '',
           endTime: '',
         },
@@ -176,13 +183,22 @@
     }, methods: {
       getData() {
         courseApi.getAllCourseInfo(this.pageInfo.current, this.pageInfo.size, this.queryData).then(res => {
-          console.log(res.data.data.items[0])
+          // console.log(res.data.data.items[0])
           this.courseInfoList = res.data.data.items;
           this.pageInfo.total = res.data.data.total
         }).catch(reason => this.$message({
           type: 'error',
           message: "获取数据出错！"
         }))
+      },
+
+      getTeacherMap(){
+        teacherApi.getAllTeacherMap().then(res=>{
+          console.log(res.data.data)
+          this.teacherMap = res.data.data
+        }).catch(reason => {
+          this.$message.error("获取数据失败")
+        })
       },
       handleCurrentChange(val) {
         this.pageInfo.currentPage = val
@@ -227,9 +243,14 @@
         }))
       }, editById(id) {
         this.$router.push({path: '/course/info/' + id})
+      },
+      teacherFormatter(row,column){
+        // console.log(row.teacher_id)
+        return this.teacherMap[row.teacher_id]
       }
     }, created() {
       this.getData()
+      this.getTeacherMap()
     }
   }
 </script>

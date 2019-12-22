@@ -26,6 +26,12 @@ import '@/permission' // permission control
  */
 import {mockXHR} from '../mock'
 
+import Video from 'video.js'
+import 'video.js/dist/video-js.css'
+Vue.prototype.$video = Video
+
+
+
 if (process.env.NODE_ENV === 'production') {
   mockXHR()
 }
@@ -41,6 +47,5 @@ new Vue({
   el: '#app',
   router,
   store,
-
   render: h => h(App)
 })

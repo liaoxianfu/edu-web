@@ -22,12 +22,14 @@
     "nprogress": "0.2.0",
     "path-to-regexp": "2.4.0",
     "query-string": "latest",
+    "video.js": "^7.6.6",
     "vue": "2.6.10",
     "vue-router": "3.0.6",
     "vuex": "3.1.0",
     "wangeditor": "^3.1.1"
   },
   "devDependencies": {
+
     "@babel/core": "7.0.0",
     "@babel/register": "7.0.0",
     "@vue/cli-plugin-babel": "3.6.0",

@@ -52,3 +52,13 @@ export const getAllTeacher = function () {
     method: 'get'
   })
 }
+
+// 获取教师map信息
+
+
+export const getAllTeacherMap = function () {
+  return request({
+    url: baseUrl + '/map',
+    method: 'get'
+  })
+}
