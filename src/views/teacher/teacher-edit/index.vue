@@ -95,7 +95,10 @@
     }, methods: {
       "onSubmit": function () {
         const id = this.$route.params.id;
-        updateTeacherById(id, this.teacher).then(res => {
+        let teacherData ={...this.teacher}
+        teacherData.gmtCreate=null
+        teacherData.gmtModified= null
+        updateTeacherById(id, teacherData).then(res => {
           console.log("post上传结果", res.success)
           if (res.success) {
             this.$message({

@@ -132,9 +132,10 @@
       </div>
     </el-dialog>
 
-    <el-dialog  :visible.sync="previewVideoFormVisible" title="预览视频"
-               :before-close="previewVideoBeforeClose" @opened="initVideo" >
+    <el-dialog :visible.sync="previewVideoFormVisible" title="预览视频"
+               :before-close="previewVideoBeforeClose" @opened="initVideo">
       <video id="myVideo" class="video-js"></video>
+      <el-tag type="danger" v-if="noVideoInfo!==''">{{this.noVideoInfo}}</el-tag>
     </el-dialog>
 
   </div>
@@ -163,6 +164,7 @@
   export default {
     data() {
       return {
+        noVideoInfo: '',
         previewVideoFormVisible: false,// 设置预览视频的dialog为false
         previewVideoResourceUrl: '',// 文件预览的url
         uploadedFileName: '',// 如果已经上传文件
@@ -472,18 +474,18 @@
         })
       },
       /**
-       * 初始化视频播放器
+       * 初始化视频播放器 如果存在视频id就初始化播放器
+       * 否者就弹出没有视频资源请上传
        */
       initVideo() {
-        if (this.previewVideoResourceUrl!=='') {
-
-
+        console.log(this.previewVideoResourceUrl)
+        if (this.previewVideoResourceUrl !==resourceService + previewVideoUrl+"/") {
           //初始化视频方法
           myPlayer = this.$video(myVideo, {
             //确定播放器是否具有用户可以与之交互的控件。没有控件，启动视频播放的唯一方法是使用autoplay属性或通过Player API。
             controls: true,
             //自动播放属性,muted:静音播放
-            autoplay: "muted",
+            autoplay: false,
             //建议浏览器是否应在<video>加载元素后立即开始下载视频数据。
             preload: "auto",
             //设置视频播放器的显示宽度（以像素为单位）
@@ -495,6 +497,8 @@
               type: 'video/mp4'
             }],
           });
+        } else {
+          this.noVideoInfo = "暂无视频资源 请点击左边的编辑按钮上传"
         }
       },
 

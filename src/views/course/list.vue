@@ -115,7 +115,7 @@
 
       <el-table-column
         label="操作"
-        width="250">
+        width="230">
         <template slot-scope="page">
           <el-button type="danger" @click="deleteById(page.row.id)" icon="el-icon-delete">删除</el-button>
           <el-button type="primary" @click="editById(page.row.id)" icon="el-icon-edit">修改</el-button>

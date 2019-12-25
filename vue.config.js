@@ -40,31 +40,31 @@ module.exports = {
       // change xxx-api/login => mock/login
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       '/api': {
-        target: 'http://127.0.0.1:8101',
+        target: 'http://127.0.0.1:9101',
         changeOrigin: true,
         pathRewrite: {
-          '^/api': '',
+          '^/api': '/api/edu/v1',
         }
       },
       '/user': {
-        target: 'http://127.0.0.1:8101',
+        target: 'http://127.0.0.1:9101',
         changeOrigin: true,
         pathRewrite: {
-          '^/user': '/user',
+          '^/user': '/api/edu/v1/user',
         }
       },
       '/oss':{
-        target: 'http://127.0.0.1:8001',
+        target: 'http://127.0.0.1:9101',
         changeOrigin: true,
         pathRewrite: {
-          '^/oss': '',
+          '^/oss': '/api/oss/v1',
         }
       },
       '/resource':{
-        target: 'http://127.0.0.1:8201',
+        target: 'http://127.0.0.1:9101',
         changeOrigin: true,
         pathRewrite: {
-          '^/resource': '',
+          '^/resource': '/api/video/v1',
         }
 }
     },

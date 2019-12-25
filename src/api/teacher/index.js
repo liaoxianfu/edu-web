@@ -7,8 +7,8 @@ const baseUrl = eduService + '/admin/edu/teacher'
 export const teacherPageList = function (page, size, params) {
   return request({
     url: `${baseUrl}/${page}/${size}`,
-    method: 'get',
-    params: params,
+    method: 'post',
+    data: params,
   })
 };
 
