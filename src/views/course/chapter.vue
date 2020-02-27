@@ -37,7 +37,7 @@
                 <span style="float: right" class="acts">
                         <el-button type="text" @click="getVideoInfoById(video.id)">编辑</el-button>
                         <el-button type="text" @click="deleteVideoById(video.id)">删除</el-button>
-                      <el-button type="text" @click="viewVideoById(video.id)">预览视频</el-button>
+                        <el-button type="text" @click="viewVideoById(video.id)">预览视频</el-button>
               </span>
               </p>
             </template>
@@ -113,7 +113,7 @@
             :file-list="this.fileList"
             :action="resourceService+videoUploadPath"
             :limit=1
-            :data="{courseId:this.courseId}"
+            :data="{courseId:this.courseId,token:this.token}"
             class="upload-demo">
             <el-button size="small" type="primary">上传视频</el-button>
             <el-tooltip placement="right-end">
@@ -123,31 +123,34 @@
               <i class="el-icon-question"/>
             </el-tooltip>
           </el-upload>
+          <el-tag type="danger">{{uploadInfo}}</el-tag>
           <p v-html="this.uploadedFileName"/>
         </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogVideoFormVisible = false">取 消</el-button>
         <el-button :disabled="saveVideoBtnDisabled" type="primary" @click="saveOrUpdateVideoData">确 定</el-button>
       </div>
     </el-dialog>
-
-    <el-dialog :visible.sync="previewVideoFormVisible" title="预览视频"
-               :before-close="previewVideoBeforeClose" @opened="initVideo">
-      <video id="myVideo" class="video-js"></video>
-      <el-tag type="danger" v-if="noVideoInfo!==''">{{this.noVideoInfo}}</el-tag>
+    <el-dialog :visible.sync="previewVideoFormVisible" title="预览视频" :before-close="previewVideoBeforeClose"
+               destroy-on-close="true">
+      <video id="video1" controls="controls" width="640px" height="360px">
+        <source :src="previewVideoResourceUrl" type="video/mp4">
+        Your browser does not support HTML5 video.
+      </video>
     </el-dialog>
-
   </div>
 </template>
 
 <script>
-
+  var socket;
 
   import * as chapterApi from '../../api/chapter'
   import * as videoApi from '../../api/video'
   import {previewVideoUrl, resourceService, videoUrl} from "../../config";
   import * as resourceApi from '../../api/resource'
+  import store from '../../store'
   // 定义默认的video对象
   const defaultVideo = {
     id: '',
@@ -159,11 +162,12 @@
     videoSourceId: '',
 
   }
-  let myPlayer;
 
   export default {
     data() {
       return {
+        uploadInfo: "等待上传新视频",
+        token: '', // 用户token
         noVideoInfo: '',
         previewVideoFormVisible: false,// 设置预览视频的dialog为false
         previewVideoResourceUrl: '',// 文件预览的url
@@ -192,6 +196,10 @@
           courseId: '',
           title: '',
           sort: 0
+        },
+        eduResource: {
+          id: '',
+          videoUrl: '',
         }
       }
     },
@@ -207,6 +215,8 @@
       // 传递courseId给chapter
       this.chapter.courseId = this.courseId;
       this.getChapterByCourseId()
+      this.token = store.getters.token;
+      console.log(this.token)
     },
 
     methods: {
@@ -247,6 +257,7 @@
         })
       },
       showChapter(id) {
+        console.log("获取的id为", id)
         chapterApi.getChapterById(id).then(res => {
           console.log("获取到的id为", id)
           this.chapterInfo = res.data.data
@@ -356,7 +367,7 @@
             // 获取上传的数据
             if (this.video.videoSourceId !== '') {
               resourceApi.getVideoNameById(this.video.videoSourceId).then(res => {
-                this.uploadedFileName = "<el-tag>已经上传文件<span style='color: red'>" + res.data.name + "</span><br/>如需修改请重新上传</el-tag>"
+                this.uploadedFileName = "<el-tag>已经上传文件，如需修改请重新上传</el-tag>"
               }).catch(res => {
                 this.$message.error("获取文件失败")
                 console.log(res)
@@ -417,6 +428,9 @@
       },
       // 上传之前
       beforeUpload() {
+        let _this = this
+        // 开启websocket
+        this.openSocket(_this)
         // 判断之前的有没有已经上传过视频 如果上传过，就设置beforeVideoId 为之前的资源id 这样等新资源上传之后就删除之前上传的视频
         if (this.video.videoSourceId !== '') {
           this.beforeVideoId = this.video.videoSourceId;
@@ -430,7 +444,7 @@
       handleVodUploadSuccess(response, file, fileList) {
         console.log(response.data.id)
         // 设置新的id
-        this.video.videoSourceId = response.data.id
+        // this.video.videoSourceId = response.data.id
         this.$message.success("上传成功")
 
       },
@@ -462,7 +476,7 @@
             this.previewVideoResourceUrl = resourceService + previewVideoUrl + '/' + videoResourceId
             console.log(res.data)
             console.log("视频资源id", videoResourceId)
-// 显示预览的dialog
+            // 显示预览的dialog
             this.previewVideoFormVisible = true
             // 初始化视频播放器
           } else {
@@ -477,42 +491,68 @@
        * 初始化视频播放器 如果存在视频id就初始化播放器
        * 否者就弹出没有视频资源请上传
        */
-      initVideo() {
-        console.log(this.previewVideoResourceUrl)
-        if (this.previewVideoResourceUrl !==resourceService + previewVideoUrl+"/") {
-          //初始化视频方法
-          myPlayer = this.$video(myVideo, {
-            //确定播放器是否具有用户可以与之交互的控件。没有控件，启动视频播放的唯一方法是使用autoplay属性或通过Player API。
-            controls: true,
-            //自动播放属性,muted:静音播放
-            autoplay: false,
-            //建议浏览器是否应在<video>加载元素后立即开始下载视频数据。
-            preload: "auto",
-            //设置视频播放器的显示宽度（以像素为单位）
-            width: "800px",
-            //设置视频播放器的显示高度（以像素为单位）
-            height: "400px",
-            sources: [{
-              src: this.previewVideoResourceUrl,
-              type: 'video/mp4'
-            }],
-          });
-        } else {
-          this.noVideoInfo = "暂无视频资源 请点击左边的编辑按钮上传"
-        }
-      },
+
 
       /**
        * 关闭视频预览的dialgo
        */
-      previewVideoBeforeClose() {
-        this.previewVideoFormVisible = false
-        // myPlayer.dispose()
-        this.$router.go(0)
+      previewVideoBeforeClose(done) {
+        done(true)
+        history.go(0)
       },
+      /**
+       * 打开websocket接受传递的信息
+       */
+      openSocket(element) {
+        if (typeof (WebSocket) == "undefined") {
+          console.log("您的浏览器不支持WebSocket");
+        } else {
+          console.log("您的浏览器支持WebSocket");
+          //实现化WebSocket对象，指定要连接的服务器地址与端口  建立连接
+          //等同于socket = new WebSocket("ws://localhost:8888/xxxx/im/25");
+          //var socketUrl="${request.contextPath}/im/"+$("#userId").val();
+          var socketUrl = "http://localhost:8201/imserver/" + this.token;
+          socketUrl = socketUrl.replace("https", "ws").replace("http", "ws");
+          console.log(socketUrl);
+          if (socket != null) {
+            socket.close();
+            socket = null;
+          }
+          socket = new WebSocket(socketUrl);
+          //打开事件
+          socket.onopen = function () {
+            console.log("websocket已打开");
+            //socket.send("这是来自客户端的消息" + location.href + new Date());
+          };
+          //获得消息事件
+          socket.onmessage = function (msg) {
+            if (msg.data === "连接成功") {
+              element.uploadInfo = "上传文件"
+              element.saveVideoBtnDisabled = true
+            } else if (msg.data === "开始转码") {
+              element.uploadInfo = "转码中"
+            } else {
+              element.uploadInfo = "转码完成"
+              element.video.videoSourceId = msg.data
+              element.saveVideoBtnDisabled = false
+            }
+            console.log(msg.data)
+
+
+            //发现消息进入    开始处理前端触发逻辑
+          };
+          //关闭事件
+          socket.onclose = function () {
+            console.log("websocket已关闭");
+          };
+          //发生了错误事件
+          socket.onerror = function () {
+            console.log("websocket发生了错误");
+          }
+        }
+      }
+
     }
-
-
   }
 </script>
 

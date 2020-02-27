@@ -22,7 +22,7 @@
           type="datetime"
           placeholder="选择日期时间"
           align="right"
-          value-format="yyyy:MM:dd HH:mm:ss"
+          value-format="yyyy-MM-dd HH:mm:ss"
           :picker-options="pickerOptions">
         </el-date-picker>
       </el-form-item>
@@ -33,7 +33,7 @@
           type="datetime"
           placeholder="选择日期时间"
           align="right"
-          value-format="yyyy:MM:dd HH:mm:ss"
+          value-format="yyyy-MM-dd HH:mm:ss"
           :picker-options="pickerOptions">
         </el-date-picker>
 
@@ -81,12 +81,7 @@
       <el-table-column
         prop="gmt_create"
         label="创建日期"
-        width="300">
-      </el-table-column>
-      <el-table-column
-        prop="gmt_modified"
-        label="修改时间"
-        width="300">
+        width="250">
       </el-table-column>
       <el-table-column
         prop="intro"

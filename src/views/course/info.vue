@@ -70,7 +70,7 @@
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload">
-          <img v-if="courseInfo.cover" :src="courseInfo.cover" class="avatar" alt="图像上传">
+          <img v-if="courseInfo.cover" :src="courseInfo.cover"  alt="图像上传">
           <i v-else class="el-icon-plus avatar-uploader-icon"/>
         </el-upload>
       </el-form-item>

@@ -53,20 +53,20 @@ module.exports = {
           '^/user': '/api/edu/v1/user',
         }
       },
-      '/oss':{
+      '/oss': {
         target: 'http://127.0.0.1:9101',
         changeOrigin: true,
         pathRewrite: {
           '^/oss': '/api/oss/v1',
         }
       },
-      '/resource':{
-        target: 'http://127.0.0.1:9101',
+      '/resource': {
+        target: 'http://127.0.0.1:8201',
         changeOrigin: true,
         pathRewrite: {
-          '^/resource': '/api/video/v1',
-        }
-}
+          '^/resource': '',
+        },
+      },
     },
     after: require('./mock/mock-server.js')
   },

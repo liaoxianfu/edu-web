@@ -101,18 +101,6 @@
         label="状态"
         width="100">
       </el-table-column>
-
-      <el-table-column
-        prop="gmt_create"
-        label="创建日期"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="gmt_modified"
-        label="修改日期"
-        width="180">
-      </el-table-column>
-
       <el-table-column
         label="操作"
         width="230">

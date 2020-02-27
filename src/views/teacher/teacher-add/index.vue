@@ -106,16 +106,15 @@
               type: 'success',
               message: '添加成功!'
             });
+            this.goBack(); // 返回
           } else {
             this.$message({
               type: 'error',
-              message: '添加成功!'
+              message: '添加失败!'
             });
           }
         })
-      }
-
-      ,
+      },
       "goBack": function () {
         this.$router.push({
           path: "/teacher-manger/teacher-list", query: {

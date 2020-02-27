@@ -9,6 +9,8 @@ export const avatar_host = "/admin/oss/file/upload/avatar"
 export const default_course_cover = "https://edu-01.oss-cn-shanghai.aliyuncs.com/course/default.jpg"
 export const course_host = "/admin/oss/file/upload/course"
 export const subject_host = "/admin/edu/subject/import"
+// 学生上传地址
+export const student_host = "/admin/edu/student/file"
 // 富文本编辑器的服务器路径
 export const editor_image_host = '/admin/oss/file/upload/editor'
 

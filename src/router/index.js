@@ -8,6 +8,8 @@ import Layout from '@/layout'
 import {teacherRouter} from "@/router/teacher";
 import {subjectRouter} from "@/router/subject";
 import {courseRouter} from "@/router/course";
+import {testRouter} from "@/router/test"
+import {studentRouter} from "@/router/student";
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -56,10 +58,11 @@ export const constantRoutes = [
       meta: {title: 'Dashboard', icon: 'dashboard'}
     }]
   },
-
+  studentRouter,
   teacherRouter,//教师管理路由
   subjectRouter,// 课程管理路由
   courseRouter,// 课程
+  // testRouter,// 测试
 
   // 404 page must be placed at the end !!!
   {path: '*', redirect: '/404', hidden: true}

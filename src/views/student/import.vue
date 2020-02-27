@@ -7,8 +7,7 @@
           title="模板说明"
           width="200"
           trigger="hover"
-          content="请按照模板给出的示例进行填写 并将每个表格转换成文本类型，
-          转换示例：https://zhidao.baidu.com/question/1994149520624324427.html">
+          content="请按照模板给出的示例进行填写 并将每个表格转换成文本类型，转换示例：https://zhidao.baidu.com/question/1994149520624324427.html">
           <el-button slot="reference">模板解释</el-button>
         </el-popover>
         <el-tag>
@@ -26,7 +25,7 @@
           :on-error="fileUploadError"
           :disabled="importBtnDisabled"
           :limit="1"
-          :action="OSS_SERVICE+SUBJECT_HOST"
+          :action="OSS_SERVICE+STUDENT_HOST"
           name="file"
           accept="application/vnd.ms-excel">
           <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -44,14 +43,14 @@
 </template>
 
 <script>
-  import {eduService, default_subject_path, subject_host} from "../../../config";
+  import {eduService, default_subject_path, student_host} from "../../config";
 
   export default {
     data() {
       return {
         OSS_SERVICE: eduService, // 接口API地址
         DEFAULT_SUBJECT_PATH: default_subject_path, // 阿里云OSS地址
-        SUBJECT_HOST: subject_host,
+        STUDENT_HOST: student_host,
         fileUploadBtnText: '上传到服务器', // 按钮文字
         importBtnDisabled: false, // 按钮是否禁用,
         loading: false

@@ -16,3 +16,11 @@ export const removeById = function (id) {
     method: 'delete',
   })
 }
+
+export const saveStage = function (eduResource) {
+  return request({
+    url: baseUrl + "/storage",
+    method: 'post',
+    data: eduResource
+  })
+}
